@@ -44,17 +44,14 @@ end
 
 if not LPH_OBFUSCATED then
     getfenv().LPH_NO_VIRTUALIZE = function(f) return f end
-  end
-  
+end
 
-  local ReplicatedStorage = game:GetService("ReplicatedStorage")
-  
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Handshake = ReplicatedStorage.Remotes.CharacterSoundEvent
+local Hooks = {}
+local HandshakeInts = {}
 
-  local Handshake = ReplicatedStorage.Remotes.CharacterSoundEvent
-  local Hooks = {}
-  local HandshakeInts = {}
-  
-  LPH_NO_VIRTUALIZE(function()
+LPH_NO_VIRTUALIZE(function()
     for i, v in getgc() do
         if typeof(v) == "function" and islclosure(v) then
             if (#getprotos(v) == 1) and table.find(getconstants(getproto(v, 1)), 4000001) then
@@ -62,25 +59,31 @@ if not LPH_OBFUSCATED then
             end
         end
     end
-  end)()
-  
-  Hooks.__namecall = hookmetamethod(game, "__namecall", LPH_NO_VIRTUALIZE(function(self, ...)
+end)()
+
+Hooks.__namecall = hookmetamethod(game, "__namecall", LPH_NO_VIRTUALIZE(function(self, ...)
     local Method = getnamecallmethod()
     local Args = {...}
-  
-    if not checkcaller() and (self == Handshake) and (Method == "fireServer") and (string.find(Args[1], "AC")) then
+
+    if not checkcaller() and (self == Handshake) and (Method == "fireServer") and (type(Args[1]) == "string" and string.find(Args[1], "AC")) then
         if (#HandshakeInts == 0) then
-            HandshakeInts = {table.unpack(Args[2], 2, 18)}
+            -- Added check to ensure Args[2] is a table before attempting to unpack
+            if (type(Args[2]) == "table") then
+                HandshakeInts = {table.unpack(Args[2], 2, 18)}
+            else
+                warn("Args[2] is not a table, skipping unpack.") -- Optional: Add a warning message.
+            end
+
         else
             for i, v in HandshakeInts do
                 Args2 = v
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaomao8090/Adonis-Bypass-Framework/master/AdonisBypass.lua"))()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/xiaomao8090/Adonis-Bypass-Framework/master/AdonisBypass.lua"))()
+                break -- Crucial: Break after the first iteration!
             end
         end
     end
-  
-return Hooks.__namecall(self, ...)
+
+    return Hooks.__namecall(self, ...)
 end))
 
   task.wait(1)
