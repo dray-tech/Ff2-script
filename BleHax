@@ -92,7 +92,7 @@ end
 local ping = 0
 local fps = 0
 
-local Lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/devdoroz/BleHax-ui-lib/main/zmacsploitsynchrousfix.lua"))()
+local Lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/devdoroz/bleachhax-ui-lib/main/zmacsploitsynchrousfix.lua"))()
 local UI = Lib:Create()
 
 local configSavingUI = game:GetObjects("rbxassetid://18187656247")[1]:Clone()
